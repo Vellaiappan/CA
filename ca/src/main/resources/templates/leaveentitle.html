@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Leave Entitle List</title>
+<th:block th:include="layout/header"></th:block>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+<div class="container" align="center">
+    <div th:if="${not #lists.isEmpty(leavelist)}">
+        <h2>All Leave Entitles</h2>
+        <table border='1' class="table table-striped">
+            <tr>
+                <th>LeaveType</th>
+                <th>Role</th>
+                <th>LeaveCount</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            <tr th:each="leaveentitlement : ${leavelist}">
+                <td  th:text="${leaveentitlement.leavetype}"></td>
+                <td  th:text="${leaveentitlement.role}"></td>
+                <td  th:text="${leaveentitlement.leavecount}"></td>
+                <td ><a th:href="${'/leaveentitle/edit/' + leaveentitlement.id}" class="btn btn-default">Edit</a></td>
+                <td ><a th:href="${'/leaveentitle/delete/' + leaveentitlement.id}" class="btn btn-danger">Delete</a></td>
+            </tr>
+        </table>
+    </div>
+    <br>
+</div>
+<div class="w3-container" align="center">
+    <a th:href="${'/leaveentitle/add'}" class="w3-button w3-black">AddLeaveType</a>
+    </div>
+</body>
+</html>

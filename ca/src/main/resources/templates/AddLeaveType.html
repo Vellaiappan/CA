@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Add Leave Entitle</title>
+<th:block th:include="layout/header"></th:block>
+</head>
+<body>
+		<h2 align="center">Add/Edit LeaveType Details</h2>
+			<form class="form-horizontal" th:object="${leaveentitlement}"
+				th:action="@{/savetype}" method="post" onsubmit="return myfun();">
+				<input type="hidden" class="form-control" th:field="*{id}" />
+				<table align="center">
+				<tr><td><label class="col-sm-2 control-label">LeaveType:</label></td>
+				<td><input type="text" class="form-control" id="leavetype" th:field="*{leavetype}" /></td>
+				<td><p style="color:red;" th:if="${#fields.hasErrors('leavetype')}" th:errors="*{leavetype}"></p>
+				</td></tr>
+					
+				
+				<tr><td><label class="col-sm-2 control-label">Role:</label></td>
+				<td><select class="form-control" id="role" name="role" th:field="*{role}">
+						   <option value="Employee">Employee</option>
+						   <option value="Manager">Manager</option>
+						</select></td>
+						<td><p style="color:red;" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></p></td></tr>
+					
+				<tr><td><label class="col-sm-2 control-label">LeaveCount:</label></td>
+				<td><input type="number" min="0" class="form-control" id="leavecount" th:field="*{leavecount}" /></td>
+				<td><p style="color:red;" th:if="${#fields.hasErrors('leavecount')}" th:errors="*{leavecount}"></p></td></tr>	
+				
+				<tr><td><button type="submit" class="btn btn-primary" >Save</button>
+				</td></tr>
+				</table>
+			</form>
+</body>
+<script>
+function myfun()
+{
+	if(document.getElementById("leavetype").value=="")
+	{	alert("Leave Type cannot be empty..");
+	    return false;
+	}   
+	return true;    
+}
+</script>
+</html>

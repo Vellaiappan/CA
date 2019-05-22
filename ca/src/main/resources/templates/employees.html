@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Employees List</title>
+<th:block th:include="layout/header"></th:block>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+<div class="container" align="center">
+    <div th:if="${not #lists.isEmpty(employees)}">
+        <h2>All Employees</h2>
+        <table border='1' class="table table-striped">
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Designation</th>
+                <th>ManagerID</th>
+                <th>EmailId</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            <tr th:each="employee : ${employees}">
+                <td th:if="${employee.getName()!='System'}" th:text="${employee.name}"></td>
+                <td th:if="${employee.getName()!='System'}" th:text="${employee.role}"></td>
+                <td th:if="${employee.getName()!='System'}" th:text="${employee.designation}"></td>
+                <td th:if="${employee.getName()!='System'}" th:text="${employee.managerid}"></td>
+                <td th:if="${employee.getName()!='System'}" th:text="${employee.emailid}"></td>
+                <td th:if="${employee.getName()!='System'}"><a th:href="${'/employees/edit/' + employee.id}" class="btn btn-default">Edit</a></td>
+                <td th:if="${employee.getName()!='System'}"><a th:href="${'/employees/delete/' + employee.id}" class="btn btn-danger">Delete</a></td>
+            </tr>
+        </table>
+    </div>
+    <br>
+</div>
+<div class="w3-container" align="center">
+    <a th:href="${'/employees/add'}" class="w3-button w3-black">AddEmployee</a>
+    </div>
+</body>
+</html>

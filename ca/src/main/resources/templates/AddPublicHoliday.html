@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Add Public Holiday</title>
+<th:block th:include="layout/header"></th:block>
+</head>
+<body>
+<h2 align="center">Add/Edit PublicHoliday Details</h2>
+			<form class="form-horizontal" th:object="${publicholidays}"
+				th:action="@{/saveholiday}" method="post" onsubmit="return myfun();">
+				<table align="center">
+				<tr><td><label class="col-sm-2 control-label">Date:</label></td>
+				<td><input type="date" class="form-control" id="date" th:field="*{date}" /></td>
+				<td><p style="color:red;" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></p>
+				</td></tr>
+					
+				<tr><td><label class="col-sm-2 control-label">Name:</label></td>
+				<td><input type="text" class="form-control" id="name" th:field="*{name}" /></td>
+				<td><p style="color:red;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+				</td></tr>	
+				
+				<tr><td><button type="submit" class="btn btn-primary">Save</button>
+				</td></tr>
+				</table>
+
+			</form>
+	
+</body>
+<script>
+function myfun()
+{
+	var GivenDate = document.getElementById("date").value;
+	var CurrentDate = new Date();
+	GivenDate = new Date(GivenDate);
+
+	if(GivenDate < CurrentDate){
+		alert("Date cannot be in past");
+		return false;
+	}
+	if(document.getElementById("date").value=="")
+		{
+		  alert("Date cannot be empty");
+		  return false;
+		}
+	if(document.getElementById("name").value=="")
+	{
+		  alert("Name cannot be empty");
+		  return false;
+		}
+	return true;
+	}
+</script>
+</html>

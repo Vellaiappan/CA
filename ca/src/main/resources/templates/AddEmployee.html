@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Employee Details</title>
+<th:block th:include="layout/header"></th:block>
+</head>
+<body onload="changecat();">
+
+<div class="container" align="center" th:switch="${Error}">
+		<h2>Add/Edit Employee Details</h2>
+		<div align="center" th:case="'error'">
+				<p th:text="${message}" style="font-size: 20; color: #FF1C19;"></p>
+				<button onclick="goback();">Back</button>
+			    </div>
+		<div th:case="*">
+			<form class="form-horizontal" th:object="${employee}"
+				th:action="@{/employees}" method="post">
+				<div class="form-group">
+					<div class="col-sm-10">
+						<input type="hidden" class="form-control" th:field="*{id}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+						<label class="col-sm-2 control-label">Name:</label>
+						<input type="text" class="form-control" th:field="*{name}" />
+						<p style="color:red;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					<label class="col-sm-2 control-label">Role:</label>
+						<select class="form-control" id="role" name="role" th:field="*{role}" onClick="changecat();">
+						   <option value="Employee">Employee</option>
+						   <option value="Manager">Manager</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+						<label class="col-sm-2 control-label">Designation:</label>
+						<select class="form-control" id="designation" name="designation" th:field="*{designation}" >
+						<option id="select" value="">Select</option>
+						<option id="FinanceExecutive" value="FinanceExecutive">FinanceExecutive</option>
+						<option id="SalesExecutive" value="SalesExecutive">SalesExecutive</option>
+						<option id="Engineer" value="Engineer">Engineer</option>
+						<option id="Others" value="Others">Others</option>
+						<option id="GeneralManager" value="GeneralManager">GeneralManager</option>
+						<option id="FinanceManager" value="FinanceManager">FinanceManager</option>
+						<option id="PortfolioManager" value="PortfolioManager">PortfolioManager</option>
+						</select>
+						<p style="color:red;" th:if="${#fields.hasErrors('designation')}" th:errors="*{designation}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					<label class="col-sm-2 control-label">ManagerID:</label>
+						<select class="form-control" th:field="*{managerid}" >
+						<option value="system">select</option>
+						<option th:each="employee :${mlist}" th:if="${employee.getId()!='system'}" th:value="${employee.id}" th:text="${employee.name}" ></option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					    <label class="col-sm-2 control-label">EmailID:</label>
+						<input type="text" class="form-control" th:field="*{emailid}" />
+						<p style="color:red;" th:if="${#fields.hasErrors('emailid')}" th:errors="*{emailid}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2">
+						<button type="submit" class="btn btn-primary">Save</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+	    function changecat() {
+	       if(document.getElementById("role").value=="Manager")
+	       {
+	         document.getElementById("FinanceExecutive").disabled=true;
+	         document.getElementById("SalesExecutive").disabled=true;
+	         document.getElementById("Engineer").disabled=true;
+	         document.getElementById("Others").disabled=true;
+	         document.getElementById("GeneralManager").disabled=false;
+	         document.getElementById("FinanceManager").disabled=false;
+	         document.getElementById("PortfolioManager").disabled=false;
+	       }
+	       else if(document.getElementById("role").value=="Employee")
+	       {
+	    	   document.getElementById("FinanceExecutive").disabled=false;
+		       document.getElementById("SalesExecutive").disabled=false;
+		       document.getElementById("Engineer").disabled=false;
+		       document.getElementById("Others").disabled=false;
+		       document.getElementById("GeneralManager").disabled=true;
+		       document.getElementById("FinanceManager").disabled=true;
+		       document.getElementById("PortfolioManager").disabled=true;
+	       }
+	    }
+function goback()
+{
+	window.location.href="http://localhost:8080/employees/add";
+	}
+</script>
+</html>

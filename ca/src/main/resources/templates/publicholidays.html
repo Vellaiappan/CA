@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Public Holidays</title>
+<th:block th:include="layout/header"></th:block>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+<div class="container" align="center">
+    <div th:if="${not #lists.isEmpty(holidays)}">
+        <h2>Public Holidays</h2>
+        <table border='1' class="table table-striped">
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Delete</th>
+            </tr>
+            <tr th:each="publicholidays : ${holidays}">
+                <td  th:text="${publicholidays.date}"></td>
+                <td  th:text="${publicholidays.name}"></td>
+                <td ><a th:href="${'/publicholiday/delete/' + publicholidays.date}" class="btn btn-danger">Delete</a></td>
+            </tr>
+        </table>
+    </div>
+    <br>
+</div>
+<div class="w3-container" align="center">
+    <a th:href="${'/publicholidays/add'}" class="w3-button w3-black">AddPublicHoliday</a>
+    </div>
+</body>
+</html>
