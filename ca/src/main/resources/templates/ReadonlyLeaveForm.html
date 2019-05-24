@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Leave Form</title>
+<th:block th:include="layout/header"></th:block>
+<style>
+.button {
+  font: bold 11px Arial;
+  text-decoration: none;
+  background-color: #EEEEEE;
+  color: #333333;
+  padding: 2px 6px 2px 6px;
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-left: 1px solid #CCCCCC;
+}
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+</style>
+</head>
+<body>
+<div class="tab">
+  <button class="tablinks" onclick="home();">Home</button>
+  <button class="tablinks" onclick="logout();">Logout</button>
+</div>
+<div class="container" align="center">
+		<h2>Leave Application Form</h2>
+			<form class="form-horizontal" th:object="${leaveapplication}">
+				<div class="form-group">
+					<div class="col-sm-10">
+						<input type="hidden" class="form-control" th:field="*{id}" />
+						<input type="hidden" class="form-control" id="userid" name="userid" th:value="${userid}" />
+						<input type="hidden" class="form-control" id="days" name="days" />
+					</div>
+				</div>
+				<div align="center" th:if="${Error=='error'}">
+				<p style="font-size: 20; color: #FF1C19;" th:text=${message}></p>
+			    </div>
+				<div class="form-group">
+					<div class="col-sm-10">
+						<label class="col-sm-2 control-label">Start Date:</label>
+						<input type="date" class="form-control" id="start" th:field="*{startdate}" readonly />
+						<p style="color:red;" th:if="${#fields.hasErrors('startdate')}" th:errors="*{startdate}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					<label class="col-sm-2 control-label">End Date:</label>
+					<input type="date" class="form-control" id="end" th:field="*{enddate}" readonly />
+					<p style="color:red;" th:if="${#fields.hasErrors('enddate')}" th:errors="*{enddate}"></p>	
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					<label class="col-sm-2 control-label">LeaveType:</label>
+						<select class="form-control" id="leavetype" th:field="*{leavetype}" disabled>
+						<option th:each="leaveentitlement :${leavetypes}"  th:value="${leaveentitlement.id}" th:text="${leaveentitlement.leavetype}" ></option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+						<label class="col-sm-2 control-label">Reason:</label>
+						<input type="text" class="form-control" id="reasons" th:field="*{reasons}" readonly />
+						<p style="color:red;" th:if="${#fields.hasErrors('reasons')}" th:errors="*{reasons}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					    <label class="col-sm-2 control-label">Contact:</label>
+						<input type="text" class="form-control" th:field="*{contact}" readonly />
+						<p style="color:red;" th:if="${#fields.hasErrors('contact')}" th:errors="*{contact}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+						<label class="col-sm-2 control-label">Status:</label>
+						<input type="text" class="form-control" id="status" name="status" th:value="${status}" readonly />
+						<p style="color:red;" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					    <label class="col-sm-2 control-label">Manager:</label>
+						<input type="text" class="form-control" id="manager" name="manager" th:value="${employee.managerid}" readonly />
+						<p style="color:red;" th:if="${#fields.hasErrors('manager')}" th:errors="*{manager}"></p>
+					</div>
+				</div>
+							<div class="form-group">
+			       <div class="col-sm-2" th:if="${status=='Approved'}">
+						<a th:href="${'/saveleave/cancel/' + leaveapplication.id+'/'+userid}" class="button">Cancel</a>
+					</div>
+					</div>
+			</form>
+					<div class="col-sm-2">
+						<button onclick="myfun();">Back</button>
+					</div>
+				</div>
+		
+
+</body>
+<script>
+function myfun()
+{
+	 window.history.back();
+}
+function home()
+{
+	window.location="http://localhost:8080/employeehome/"+document.getElementById("userid").value;
+	}
+function logout()
+{
+	window.location="http://localhost:8080/";
+}
+</script>
+
+</html>

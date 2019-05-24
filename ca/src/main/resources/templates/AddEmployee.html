@@ -4,9 +4,43 @@
 <meta charset="ISO-8859-1">
 <title>Employee Details</title>
 <th:block th:include="layout/header"></th:block>
+<style>
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+</style>
 </head>
 <body onload="changecat();">
-
+<div class="tab">
+  <button class="tablinks" onclick="home();">Home</button>
+  <button class="tablinks" onclick="logout();">Logout</button>
+</div>
 <div class="container" align="center" th:switch="${Error}">
 		<h2>Add/Edit Employee Details</h2>
 		<div align="center" th:case="'error'">
@@ -15,7 +49,7 @@
 			    </div>
 		<div th:case="*">
 			<form class="form-horizontal" th:object="${employee}"
-				th:action="@{/employees}" method="post">
+				th:action="@{/employees}" method="post" onsubmit="return myfun();">
 				<div class="form-group">
 					<div class="col-sm-10">
 						<input type="hidden" class="form-control" th:field="*{id}" />
@@ -56,7 +90,7 @@
 				<div class="form-group">
 					<div class="col-sm-10">
 					<label class="col-sm-2 control-label">ManagerID:</label>
-						<select class="form-control" th:field="*{managerid}" >
+						<select class="form-control" id="manager" th:field="*{managerid}" >
 						<option value="system">select</option>
 						<option th:each="employee :${mlist}" th:if="${employee.getId()!='system'}" th:value="${employee.id}" th:text="${employee.name}" ></option>
 						</select>
@@ -106,5 +140,33 @@ function goback()
 {
 	window.location.href="http://localhost:8080/employees/add";
 	}
+	function myfun()
+	{
+		if(document.getElementById("role").value=="Employee")
+			{
+			   if(document.getElementById("manager").value=="system")
+				   {
+				      alert("Please choose Manager for employee role");
+				      return false;
+				   }
+			}
+		if(document.getElementById("role").value=="Manager")
+		{
+		   if(document.getElementById("manager").value!="system")
+			   {
+			      alert("Please cannot choose Manager for Manager role");
+			      return false;
+			   }
+		}
+		return true;
+	}
+	function home()
+	{
+		window.location="http://localhost:8080/adminhome";
+		}
+	function logout()
+	{
+		window.location="http://localhost:8080/";
+		}
 </script>
 </html>

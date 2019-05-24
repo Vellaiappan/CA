@@ -18,4 +18,13 @@ public interface EmployeeRepository extends JpaRepository<Employee,String> {
 
 	@Query(value="select Id from employee where emailid=?1",nativeQuery=true)
 	String findByEmail(String email);
+	
+	@Query(value="select * from employee where id=?1 and password=?2 and role=?3",nativeQuery=true)
+	List<Employee> findEmployee(String username,String password,String role);
+	
+	@Query(value="select * from employee where id=?1 and password=?2 and role=?3",nativeQuery=true)
+	List<Employee> findManager(String username,String password,String role);
+	
+	@Query(value="select * from employee where managerid=?1",nativeQuery=true)
+	List<Employee> getAllSubEmp(String mangid);
 }

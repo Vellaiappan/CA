@@ -20,7 +20,7 @@ import sg.edu.nus.ca.repository.LeaveBalanceRepository;
 import sg.edu.nus.ca.repository.LeaveEntitleRepository;
 
 @Controller
-public class EmployeeContoller {
+public class EmployeeController {
 
 	@Autowired
 	private EmployeeRepository empRepo;

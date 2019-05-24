@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Employee Leave Applications</title>
+<th:block th:include="layout/header"></th:block>
+<style type="text/css">
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+</style>
+</head>
+<body>
+<div class="tab">
+  <button class="tablinks" onclick="home();">Home</button>
+  <button class="tablinks" onclick="logout();">Logout</button>
+</div>
+<div class="container" align="center">
+    <div th:if="${#lists.isEmpty(leavelist)}">
+      <h2>Employee Leave Applications</h2>
+      <p style="color:red;">No more applications to view/process....</p>
+    </div>
+    <input type="hidden" id="login" name="login" th:if="${role=='Employee'}" value="employeehome"/>
+    <input type="hidden" id="login" name="login" th:if="${role=='Manager' or role=='NoView'}" value="managerhome"/>
+    <input type="hidden" id="userid" name="userid" th:value="${userid}"/> 
+    <div th:if="${not #lists.isEmpty(leavelist)}">
+        <h2>Employee Leave Applications</h2>
+        <table border='1' class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>LeaveType</th>
+                <th>Reason</th>
+                <th>No.of Days</th>
+                <th>Status</th>
+                <th th:if="${role=='Employee' or role=='NoView'}">Manager</th>
+                <th th:if="${role=='Manager' or role=='NoView'}">Employee</th>
+                <th>Contact</th>
+            </tr>
+            <tr th:each="leaveapplication : ${leavelist}">
+                <td th:text="${leaveapplication.id}"></td>
+                <td th:text="${leaveapplication.startdate}"></td>
+                <td th:text="${leaveapplication.enddate}"></td>
+                <td th:each="leaveentitlement:${leavetype}" th:if="${leaveapplication.leavetype==leaveentitlement.id}" th:text="${leaveentitlement.leavetype}"></td>
+                <td th:text="${leaveapplication.reasons}"></td>
+                <td th:text="${leaveapplication.numofdays}"></td>
+                <td th:text="${leaveapplication.status}"></td>
+                <td th:if="${role=='Employee' or role=='NoView'}" th:text="${leaveapplication.manager}"></td>
+                <td th:if="${role=='Manager' or role=='NoView'}" th:text="${leaveapplication.employee.id}"></td>
+                <td th:text="${leaveapplication.contact}"></td>
+                <td th:if="${role=='Employee'}"><a th:href="${'/saveleave/edit/' + leaveapplication.id+'/'+ userid}" class="btn btn-default">View Application</a></td>
+                <td th:if="${role=='Manager'}"><a th:href="${'/approveleave/edit/' + leaveapplication.id+'/'+ userid}" class="btn btn-default">View Application</a></td>
+            </tr>
+        </table>
+                <center><button th:if="${role=='NoView'}" onclick="myfun();">Back</button></center>
+    </div>
+    <br>
+</div>
+</body>
+<script>
+function myfun()
+{
+	 window.history.back();
+}
+function home()
+{
+	window.location="http://localhost:8080/"+document.getElementById("login").value+"/"+document.getElementById("userid").value;
+	}
+function logout()
+{
+	window.location="http://localhost:8080/";
+}
+</script>
+</html>

@@ -2,11 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<title>Public Holidays</title>
+<title>Employee Leave Balance</title>
 <th:block th:include="layout/header"></th:block>
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<style>
-/* Style the tab */
+<style type="text/css">
 .tab {
   overflow: hidden;
   border: 1px solid #ccc;
@@ -34,7 +32,6 @@
 .tab button.active {
   background-color: #ccc;
 }
-
 </style>
 </head>
 <body>
@@ -43,35 +40,38 @@
   <button class="tablinks" onclick="logout();">Logout</button>
 </div>
 <div class="container" align="center">
-    <div th:if="${not #lists.isEmpty(holidays)}">
-        <h2>Public Holidays</h2>
+ <input type="hidden" id="userid" name="userid" th:value="${userid}"/> 
+    <div th:if="${not #lists.isEmpty(ballist)}">
+        <h2>Employee Leave History</h2>
         <table border='1' class="table table-striped">
             <tr>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Delete</th>
+                <th>Leave Type Id</th>
+                <th>Leave Type</th>
+                <th>Balance</th>
             </tr>
-            <tr th:each="publicholidays : ${holidays}">
-                <td  th:text="${publicholidays.date}"></td>
-                <td  th:text="${publicholidays.name}"></td>
-                <td ><a th:href="${'/publicholiday/delete/' + publicholidays.date}" class="btn btn-danger">Delete</a></td>
+            <tr th:each="leavebalance : ${ballist}">
+                <td th:text="${leavebalance.balanceIdentity.leavetypeid}"></td>
+                <td th:each="leaveentitlement:${leavetype}" th:if="${leavebalance.balanceIdentity.leavetypeid==leaveentitlement.id}" th:text="${leaveentitlement.leavetype}"></td>
+                <td th:text="${leavebalance.leavebalance}"></td>
             </tr>
         </table>
+        <button onclick="myfun();">Back</button>
     </div>
     <br>
 </div>
-<div class="w3-container" align="center">
-    <a th:href="${'/publicholidays/add'}" class="w3-button w3-black">AddPublicHoliday</a>
-    </div>
 </body>
 <script>
+function myfun()
+{
+	  window.history.back();
+	}
 function home()
 {
-	window.location="http://localhost:8080/adminhome";
+	window.location="http://localhost:8080/employeehome/"+document.getElementById("userid").value;
 	}
 function logout()
 {
 	window.location="http://localhost:8080/";
-	}
+}
 </script>
 </html>

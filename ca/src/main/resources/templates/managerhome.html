@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<title>Admin Home</title>
+<title>Manager Home</title>
 <th:block th:include="layout/header"></th:block>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <style>
@@ -37,34 +37,35 @@
 
 </style>
 </head>
+
 <body align="center">
 <div class="tab">
   <button class="tablinks" onclick="home();">Home</button>
   <button class="tablinks" onclick="logout();">Logout</button>
 </div>
 <br>
+<input type="hidden" id="userid" name="userid" th:value="${userid}"/>
 <div class="w3-container">
-  <a href="/employees" class="w3-button w3-black">View and Manage Employees</a>
+  <a th:href="${'/approveleave/'+userid}" class="w3-button w3-black">Approve Leave Application</a>
 </div>
 <br><br>
 <div class="w3-container">
-  <a href="/leaveentitle" class="w3-button w3-black">Manage Leave Entitlement</a>
+  <a th:href="${'/viewallleave/'+userid}" class="w3-button w3-black">View All Leave History</a>
 </div>
 <br><br>
 <div class="w3-container">
-  <a href="/publicholidays" class="w3-button w3-black">Manage Public Holidays</a>
+  <a th:href="${'/viewspecific/'+userid}" class="w3-button w3-black">View Employee Leave History</a>
 </div>
 <br><br>
-</body>
 </body>
 <script>
 function home()
 {
-	window.location="http://localhost:8080/adminhome";
+	window.location="http://localhost:8080/managerhome/"+document.getElementById("userid").value;
 	}
 function logout()
 {
 	window.location="http://localhost:8080/";
-	}
+}
 </script>
 </html>

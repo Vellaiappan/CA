@@ -1,7 +1,6 @@
 package sg.edu.nus.ca.model;
-
 import java.sql.Date;
-
+import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;

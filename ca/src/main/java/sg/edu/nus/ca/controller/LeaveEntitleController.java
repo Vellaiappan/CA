@@ -46,10 +46,18 @@ public class LeaveEntitleController {
 
 
 	@RequestMapping(path = "/savetype", method = RequestMethod.POST)
-    public String saveLeaveType(@Valid LeaveEntitlement leave,BindingResult bindingresult) {
+    public String saveLeaveType(@Valid LeaveEntitlement leave,BindingResult bindingresult,Model model) {
 		if(bindingresult.hasErrors())
 		{
 			return "AddLeaveType";
+		}
+		List<LeaveEntitlement> llist=leaveRepo.checkLeave(leave.getRole(), leave.getLeavetype());
+		if(llist.size()!=0)
+		{
+			 model.addAttribute("leaveentitlement", new LeaveEntitlement());
+			model.addAttribute("Error", "error");
+			model.addAttribute("Message","Leave Type already exist for this role....");
+			return "AddLeaveType";	
 		}
         leaveRepo.save(leave);
         List<Employee> elist=empRepo.findByRole(leave.getRole());

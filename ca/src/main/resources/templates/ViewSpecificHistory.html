@@ -2,11 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<title>Admin Home</title>
+<title>Subordinate History</title>
 <th:block th:include="layout/header"></th:block>
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <style>
-/* Style the tab */
 .tab {
   overflow: hidden;
   border: 1px solid #ccc;
@@ -36,35 +34,39 @@
 }
 
 </style>
+
 </head>
-<body align="center">
+<body>
 <div class="tab">
   <button class="tablinks" onclick="home();">Home</button>
   <button class="tablinks" onclick="logout();">Logout</button>
 </div>
-<br>
-<div class="w3-container">
-  <a href="/employees" class="w3-button w3-black">View and Manage Employees</a>
-</div>
-<br><br>
-<div class="w3-container">
-  <a href="/leaveentitle" class="w3-button w3-black">Manage Leave Entitlement</a>
-</div>
-<br><br>
-<div class="w3-container">
-  <a href="/publicholidays" class="w3-button w3-black">Manage Public Holidays</a>
-</div>
-<br><br>
-</body>
+<h2 align="center">Choose Subordinate</h2>
+<form class="form-horizontal"
+				th:action="@{/searchapp}" method="post">
+				<input type="hidden" class="form-control" id="userid" name="userid" th:value="${userid}" />
+				<table align="center">
+					
+				
+				<tr><td><label class="col-sm-2 control-label">Subordinate-Employee:</label></td>
+				<td><select class="form-control" id="sub" name="sub">
+						   <option th:each="employee :${elist}" th:value="${employee.id}" th:text="${employee.name}"></option>
+						</select></td></tr>
+					
+				
+				<tr><td><button type="submit" class="btn btn-primary" >View</button>
+				</td></tr>
+				</table>
+			</form>
 </body>
 <script>
 function home()
 {
-	window.location="http://localhost:8080/adminhome";
+	window.location="http://localhost:8080/managerhome/"+document.getElementById("userid").value;
 	}
 function logout()
 {
 	window.location="http://localhost:8080/";
-	}
+}
 </script>
 </html>
