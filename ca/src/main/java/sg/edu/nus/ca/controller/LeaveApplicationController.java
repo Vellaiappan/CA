@@ -151,7 +151,10 @@ public class LeaveApplicationController {
 		balance=balance+l.getNumofdays();
         LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(userid,l.getLeavetype()),balance);
 		balRepo.save(lbal);
-	    return "redirect:/viewleave/"+userid;
+		if(l.getEmployee().getRole().equals("Employee"))
+	       return "redirect:/viewleave/"+userid;
+		else
+			return "redirect:/viewmanleave/"+userid;
 	}
 	
 	
@@ -281,7 +284,7 @@ public class LeaveApplicationController {
 	@RequestMapping(path = "/viewallleave/{id}", method = RequestMethod.GET)
     public String ViewAllLeave(Model model, @PathVariable(value = "id") String id) {
 		List<LeaveApplication> leavelist=appRepo.getAllLeave();
-		List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Employee");
+		List<LeaveEntitlement> leavetypes=entRepo.findAll();
 		model.addAttribute("userid", id);
 		model.addAttribute("leavelist", leavelist);
 		model.addAttribute("leavetype", leavetypes);
@@ -306,6 +309,121 @@ public class LeaveApplicationController {
 		model.addAttribute("role", "NoView");
 		return "ViewLeaveHistory";
 	}
+	
+	@RequestMapping(path = "/manapplyleave/{id}", method = RequestMethod.GET)
+    public String ApplyLeave(Model model, @PathVariable(value = "id") String id) {
+		model.addAttribute("leaveapplication", new LeaveApplication());
+		Employee e = empRepo.findById(id).orElse(null);
+		System.out.println("------------------"+e.getManagerid()+""+id);
+		List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Manager");
+		model.addAttribute("userid", id);
+		model.addAttribute("employee", e);
+		model.addAttribute("leavetypes", leavetypes);
+		model.addAttribute("status", "Applied");
+		return "managerleaveform";
+	}
+	
+	@RequestMapping(path = "/savemanleave", method = RequestMethod.POST)
+    public String saveManLeaveType(LeaveApplication leave,@RequestParam("userid") String id,@RequestParam("days") String days,Model model) {
+		int numofdays;
+		double balance;
+		Employee e = empRepo.findById(id).orElse(null);
+		List<LeaveApplication> lalist=appRepo.getLeaveAppForEmployee(id, "Applied", "Updated", "Approved");
+		if(LeaveCalculation.checkLeaveAppDates(lalist, leave.getStartdate().toLocalDate(), leave.getEnddate().toLocalDate()))
+		{
+			model.addAttribute("Error", "error");
+			model.addAttribute("Message", "You have some leaves applied/approved between these dates....Please delete and add...");
+			List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Manager");
+			model.addAttribute("userid", id);
+			model.addAttribute("employee", e);
+			model.addAttribute("leavetypes", leavetypes);
+			model.addAttribute("status",leave.getStatus());
+			model.addAttribute("leaveapplication", leave);
+			return "managerleaveform";	
+		}
+		leave.setEmployee(e);
+		System.out.println(Integer.parseInt(days));
+		if(Integer.parseInt(days)<=14)
+		{
+			numofdays=LeaveCalculation.numOfWorkingDays(pubRepo, leave.getStartdate().toLocalDate(), leave.getEnddate().toLocalDate());
+			System.out.println(numofdays);
+		}
+		else
+		{
+			numofdays=Integer.parseInt(days);
+			System.out.println(numofdays);
+		}
+		balance=balRepo.getBalance(id, leave.getLeavetype());
+		if(balance<numofdays)
+		{
+			model.addAttribute("Error", "error");
+			model.addAttribute("Message", "Out of Balance for selected type....");
+			List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Manager");
+			model.addAttribute("userid", id);
+			model.addAttribute("employee", e);
+			model.addAttribute("leavetypes", leavetypes);
+			model.addAttribute("status", leave.getStatus());
+			model.addAttribute("leaveapplication", leave);
+			return "leaveform";
+		}
+		leave.setNumofdays(numofdays);
+		leave.setStatus("Approved");
+		leave.setManagercomment("Auto-Approved");
+        appRepo.save(leave);
+        balance=balance-numofdays;
+        LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(id,leave.getLeavetype()),balance);
+		balRepo.save(lbal);
+        model.addAttribute("id", id);
+        return "redirect:/managerhome/"+id;
+	}
+	
+	@RequestMapping(path = "/viewmanleave/{id}", method = RequestMethod.GET)
+    public String viewManLeave(Model model, @PathVariable(value = "id") String id) {
+		List<LeaveApplication> leavelist=appRepo.getLeaveByEmployee(id);
+		List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Manager");
+		model.addAttribute("userid", id);
+		model.addAttribute("leavelist", leavelist);
+		model.addAttribute("leavetype", leavetypes);
+		model.addAttribute("role", "Manager");
+		return "ViewManLeaveHistory";
+	}
 
+	@RequestMapping(path = "/savemanleave/edit/{id}/{userid}", method = RequestMethod.GET)
+    public String updateManLeave(Model model, @PathVariable(value = "id") String id,@PathVariable(value = "userid") String userid) {
+		LeaveApplication l=appRepo.findById(Integer.parseInt(id)).orElse(null);
+		System.out.println("---------------"+l.getStatus());
+		if(l.getStatus().equals("Approved"))
+		{
+			model.addAttribute("status",l.getStatus());
+			Employee e = empRepo.findById(userid).orElse(null);
+			model.addAttribute("leaveapplication", l);
+			List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Manager");
+			model.addAttribute("userid", userid);
+			model.addAttribute("employee", e);
+			model.addAttribute("leavetypes", leavetypes);
+			return "ReadonlyLeaveForm";
+		}
+		else
+		{
+			model.addAttribute("status",l.getStatus());
+			Employee e = empRepo.findById(userid).orElse(null);
+			model.addAttribute("leaveapplication", l);
+			List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Manager");
+			model.addAttribute("userid", userid);
+			model.addAttribute("employee", e);
+			model.addAttribute("leavetypes", leavetypes);
+			return "ReadonlyLeaveForm";	
+		}
+		
+	}
+	@RequestMapping(path = "/viewmanbalance/{id}", method = RequestMethod.GET)
+    public String viewManBalance(Model model, @PathVariable(value = "id") String id) {
+		List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Manager");
+		model.addAttribute("leavetype", leavetypes);
+		List<LeaveBalance> ballist=balRepo.getEmployeeBalance(id);
+		model.addAttribute("ballist", ballist);
+		model.addAttribute("userid", id);
+		return "viewmanBalance";
+	}
 	
 }

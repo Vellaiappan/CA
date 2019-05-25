@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sg.edu.nus.ca.model.Admin;
 import sg.edu.nus.ca.model.Employee;
 import sg.edu.nus.ca.repository.EmployeeRepository;
+import sg.edu.nus.ca.service.HashPasswords;
 
 @Controller
 public class LoginController {
@@ -63,7 +64,8 @@ public class LoginController {
 	
 		@RequestMapping(path = "/verifyemployee",method=RequestMethod.POST)
 	    public String VerifyEmployee(@RequestParam("userid") String username,@RequestParam("password") String password,Model model) {
-			List<Employee> a=empRepo.findEmployee(username, password,"Employee");
+			List<Employee> a=empRepo.findEmployee(username, HashPasswords.encodeSimple(password),"Employee");
+			System.out.println(password+"---------"+HashPasswords.encodeSimple(password));
 			if(a.size()==0) {
 				model.addAttribute("Error","error");
 				return "EmployeeLogin";
@@ -83,7 +85,7 @@ public class LoginController {
 	
 		@RequestMapping(path = "/verifymanager",method=RequestMethod.POST)
 	    public String VerifyManager(@RequestParam("userid") String username,@RequestParam("password") String password,Model model) {
-			List<Employee> a=empRepo.findManager(username, password,"Manager");
+			List<Employee> a=empRepo.findManager(username, HashPasswords.encodeSimple(password),"Manager");
 			if(a.size()==0) {
 				model.addAttribute("Error","error");
 				return "ManagerLogin";

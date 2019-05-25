@@ -11,8 +11,11 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 
 import sg.edu.nus.ca.dataloader.IDGenerator;
+import sg.edu.nus.ca.service.HashPasswords;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.springframework.util.DigestUtils;
 
 @Entity
 public class Employee {
@@ -28,7 +31,7 @@ public class Employee {
 	private String id;
 	@NotEmpty
 	private String name;
-	private String password="123";
+	private String password=HashPasswords.encodeSimple("123");
 	private String role;
 	@NotEmpty
 	private String designation;

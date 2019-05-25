@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<title>Employee Leave Balance</title>
+<title>Manager Leave Balance</title>
 <th:block th:include="layout/header"></th:block>
 <style type="text/css">
 .tab {
@@ -42,7 +42,7 @@
 <div class="container" align="center">
  <input type="hidden" id="userid" name="userid" th:value="${userid}"/> 
     <div th:if="${not #lists.isEmpty(ballist)}">
-        <h2>Employee Leave Balances</h2>
+        <h2>Manager Leave Balances</h2>
         <table border='1' class="table table-striped">
             <tr>
                 <th>Leave Type Id</th>
@@ -67,7 +67,7 @@ function myfun()
 	}
 function home()
 {
-	window.location="http://localhost:8080/employeehome/"+document.getElementById("userid").value;
+	window.location="http://localhost:8080/managerhome/"+document.getElementById("userid").value;
 	}
 function logout()
 {
