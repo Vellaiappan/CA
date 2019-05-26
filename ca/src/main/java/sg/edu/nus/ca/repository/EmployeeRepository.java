@@ -27,4 +27,10 @@ public interface EmployeeRepository extends JpaRepository<Employee,String> {
 	
 	@Query(value="select * from employee where managerid=?1",nativeQuery=true)
 	List<Employee> getAllSubEmp(String mangid);
+	
+	@Query(value="select emailid from employee where id=?1",nativeQuery=true)
+	String getManemail(String manid);
+	
+	@Query(value="select role from employee where id=?1",nativeQuery=true)
+	String getRole(String id);
 }

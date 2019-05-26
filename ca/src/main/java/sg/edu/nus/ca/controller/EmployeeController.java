@@ -1,10 +1,13 @@
 package sg.edu.nus.ca.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +18,7 @@ import sg.edu.nus.ca.model.Employee;
 import sg.edu.nus.ca.model.LeaveBalance;
 import sg.edu.nus.ca.model.LeaveBalanceIdentity;
 import sg.edu.nus.ca.model.LeaveEntitlement;
+import sg.edu.nus.ca.repository.EmployeePaginationRepository;
 import sg.edu.nus.ca.repository.EmployeeRepository;
 import sg.edu.nus.ca.repository.LeaveBalanceRepository;
 import sg.edu.nus.ca.repository.LeaveEntitleRepository;
@@ -28,6 +32,8 @@ public class EmployeeController {
 	private LeaveEntitleRepository entRepo;
 	@Autowired
 	private LeaveBalanceRepository balRepo;
+	@Autowired
+	private EmployeePaginationRepository empPageRepo;
 	
 	@Autowired
 	public void setEmpRepo(EmployeeRepository empRepo) {
@@ -41,11 +47,14 @@ public class EmployeeController {
 	public void setBalRepo(LeaveBalanceRepository balRepo) {
 		this.balRepo = balRepo;
 	}
-
+    
+	public void setEmpPageRepo(EmployeePaginationRepository empPageRepo) {
+		this.empPageRepo = empPageRepo;
+	}
 
 	@RequestMapping(path = "/employees", method = RequestMethod.GET)
-    public String getAllEmployees(Model model) {
-        model.addAttribute("employees", empRepo.findAll());
+    public String getAllEmployees(Model model,@PageableDefault(size = 10) Pageable pageable) {
+        model.addAttribute("page", empPageRepo.findAll(pageable));
         return "employees";
     }
 	
@@ -87,12 +96,12 @@ public class EmployeeController {
 	@RequestMapping(path = "/employees/edit/{id}", method = RequestMethod.GET)
     public String editEmployee(Model model, @PathVariable(value = "id") String id) {   	
     	Employee e = empRepo.findById(id).orElse(null);
-    	List<LeaveEntitlement> leavelist=entRepo.getLeaveByRole(e.getRole());
-    	for(LeaveEntitlement l:leavelist)
-    	{
-    		LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(empRepo.findByEmail(e.getEmailid()),l.getId()),l.getLeavecount());
-    		balRepo.delete(lbal);
-    	}
+    	//List<LeaveEntitlement> leavelist=entRepo.getLeaveByRole(e.getRole());
+    	//for(LeaveEntitlement l:leavelist)
+    	//{
+    		//LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(empRepo.findByEmail(e.getEmailid()),l.getId()),l.getLeavecount());
+    		//balRepo.delete(lbal);
+    	//}
         model.addAttribute("employee", e);
         List<Employee> mlist=empRepo.findByRole("Manager");
         model.addAttribute("mlist", mlist);
@@ -104,4 +113,25 @@ public class EmployeeController {
         empRepo.delete(empRepo.findById(id).orElse(null));
         return "redirect:/employees";
     }
+    
+    @RequestMapping(path = "/movementregister", method = RequestMethod.GET)
+    public String movementRegister(Model model) {
+		    String current=LocalDate.now().getMonth().name();
+		    String next=LocalDate.now().plusMonths(1).getMonth().name();
+		    String previous=LocalDate.now().minusMonths(1).getMonth().name();
+		    int currentmonth=LocalDate.now().getMonthValue();
+		    int nextmonth=LocalDate.now().plusMonths(1).getMonthValue();
+		    int previousmonth=LocalDate.now().minusMonths(1).getMonthValue();
+		    int year=LocalDate.now().getYear();
+		    model.addAttribute("current", current);
+		    model.addAttribute("next", next);
+		    model.addAttribute("previous", previous);
+		    model.addAttribute("currentmonth", currentmonth);
+		    model.addAttribute("nextmonth", nextmonth);
+		    model.addAttribute("previousmonth", previousmonth);
+		    model.addAttribute("year", year);
+		    model.addAttribute("userid", "admin");
+		    model.addAttribute("role", "admin");
+		    return "movementregisterform";
+			}
 }

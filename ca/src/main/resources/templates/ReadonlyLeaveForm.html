@@ -3,54 +3,23 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Leave Form</title>
-<th:block th:include="layout/header"></th:block>
+<th:block th:if="${employee.managerid!='system'}" th:include="layout/employeeheader"></th:block>
+<th:block th:if="${employee.managerid=='system'}" th:include="layout/managerheader"></th:block>
 <style>
 .button {
   font: bold 11px Arial;
   text-decoration: none;
   background-color: #EEEEEE;
   color: #333333;
-  padding: 2px 6px 2px 6px;
+  padding: 8px 8px 8px 8px;
   border-top: 1px solid #CCCCCC;
   border-right: 1px solid #333333;
   border-bottom: 1px solid #333333;
   border-left: 1px solid #CCCCCC;
 }
-.tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-/* Style the buttons inside the tab */
-.tab button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-}
-
-/* Change background color of buttons on hover */
-.tab button:hover {
-  background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-.tab button.active {
-  background-color: #ccc;
-}
-
 </style>
 </head>
 <body>
-<div class="tab">
-  <button class="tablinks" onclick="home();">Home</button>
-  <button class="tablinks" onclick="logout();">Logout</button>
-</div>
 <div class="container" align="center">
 		<h2>Leave Application Form</h2>
 			<form class="form-horizontal" th:object="${leaveapplication}">
@@ -120,29 +89,9 @@
 					</div>
 					</div>
 			</form>
-					<div class="col-sm-2">
-						<button onclick="myfun();">Back</button>
-					</div>
+					
 				</div>
 		
 
 </body>
-<script>
-function myfun()
-{
-	 window.history.back();
-}
-function home()
-{
-	if(document.getElementById("manager").value=="system")
-		window.location="http://localhost:8080/managerhome/"+document.getElementById("userid").value;
-	else
-	    window.location="http://localhost:8080/employeehome/"+document.getElementById("userid").value;
-	}
-function logout()
-{
-	window.location="http://localhost:8080/";
-}
-</script>
-
 </html>

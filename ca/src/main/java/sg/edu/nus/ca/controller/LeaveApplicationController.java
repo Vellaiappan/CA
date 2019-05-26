@@ -1,13 +1,14 @@
 package sg.edu.nus.ca.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,10 +20,12 @@ import sg.edu.nus.ca.model.LeaveBalance;
 import sg.edu.nus.ca.model.LeaveBalanceIdentity;
 import sg.edu.nus.ca.model.LeaveEntitlement;
 import sg.edu.nus.ca.repository.EmployeeRepository;
+import sg.edu.nus.ca.repository.LeaveAppPaginationRepository;
 import sg.edu.nus.ca.repository.LeaveApplicationRepository;
 import sg.edu.nus.ca.repository.LeaveBalanceRepository;
 import sg.edu.nus.ca.repository.LeaveEntitleRepository;
 import sg.edu.nus.ca.repository.PublicHolidayRepository;
+import sg.edu.nus.ca.service.EmailServiceImpl;
 import sg.edu.nus.ca.service.LeaveCalculation;
 
 @Controller
@@ -38,6 +41,10 @@ public class LeaveApplicationController {
 	private PublicHolidayRepository pubRepo;
 	@Autowired
 	private LeaveBalanceRepository balRepo;
+	@Autowired
+	private LeaveAppPaginationRepository appPageRepo;
+	@Autowired
+	private EmailServiceImpl emailservice;
 	
 	public void setEmpRepo(EmployeeRepository empRepo) {
 		this.empRepo = empRepo;
@@ -58,7 +65,12 @@ public class LeaveApplicationController {
 	public void setBalRepo(LeaveBalanceRepository balRepo) {
 		this.balRepo = balRepo;
 	}
-//For Employee
+	
+public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
+		this.appPageRepo = appPageRepo;
+	}
+
+	//For Employee
 	@RequestMapping(path = "/submitleave/{id}", method = RequestMethod.GET)
     public String submitLeave(Model model, @PathVariable(value = "id") String id) {
 		model.addAttribute("leaveapplication", new LeaveApplication());
@@ -203,6 +215,8 @@ public class LeaveApplicationController {
 		}
 		leave.setNumofdays(numofdays);
         appRepo.save(leave);
+        emailservice.sendSimpleMessage(e.getEmailid(),"Your Leave Application Submitted","Leave Id:"+leave.getId().toString());
+        emailservice.sendSimpleMessage(empRepo.getManemail(leave.getManager()),"Your Subordinate Leave Application is Submitted in your queue","Leave Id:"+leave.getId().toString());
         //balance=balance-numofdays;
         //LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(id,leave.getLeavetype()),balance);
 		//balRepo.save(lbal);
@@ -264,6 +278,7 @@ public class LeaveApplicationController {
 		System.out.println("++++++++++++"+comment);
 		l.setManagercomment(comment);
 		appRepo.save(l);
+		emailservice.sendSimpleMessage(l.getEmployee().getEmailid(),"Your Leave Application is Rejected","Leave Id:"+l.getId().toString());
 	    return "redirect:/approveleave/"+userid;
 	}
 	
@@ -274,6 +289,7 @@ public class LeaveApplicationController {
 		l.setStatus("Approved");
 		l.setManagercomment(comment);
 		appRepo.save(l);
+		emailservice.sendSimpleMessage(l.getEmployee().getEmailid(),"Your Leave Application is Approved","Leave Id:"+l.getId().toString());
 		double balance=balRepo.getBalance(l.getEmployee().getId(), l.getLeavetype());
 		balance=balance-l.getNumofdays();
         LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(l.getEmployee().getId(),l.getLeavetype()),balance);
@@ -282,14 +298,15 @@ public class LeaveApplicationController {
 	}
 	
 	@RequestMapping(path = "/viewallleave/{id}", method = RequestMethod.GET)
-    public String ViewAllLeave(Model model, @PathVariable(value = "id") String id) {
-		List<LeaveApplication> leavelist=appRepo.getAllLeave();
+    public String ViewAllLeave(Model model, @PathVariable(value = "id") String id,@PageableDefault(size = 10) Pageable pageable) {
+		Page<LeaveApplication> leavelist=appPageRepo.findAll(pageable);
 		List<LeaveEntitlement> leavetypes=entRepo.findAll();
 		model.addAttribute("userid", id);
-		model.addAttribute("leavelist", leavelist);
+		//model.addAttribute("leavelist", leavelist);
 		model.addAttribute("leavetype", leavetypes);
 		model.addAttribute("role", "NoView");
-		return "ViewLeaveHistory";
+		model.addAttribute("page", leavelist);
+		return "ViewAllLeaveHistory";
 	}
 	@RequestMapping(path = "/viewspecific/{id}", method = RequestMethod.GET)
     public String ViewSpecificLeave(Model model, @PathVariable(value = "id") String id) {
@@ -364,7 +381,7 @@ public class LeaveApplicationController {
 			model.addAttribute("leavetypes", leavetypes);
 			model.addAttribute("status", leave.getStatus());
 			model.addAttribute("leaveapplication", leave);
-			return "leaveform";
+			return "managerleaveform";
 		}
 		leave.setNumofdays(numofdays);
 		leave.setStatus("Approved");
@@ -421,9 +438,45 @@ public class LeaveApplicationController {
 		List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Manager");
 		model.addAttribute("leavetype", leavetypes);
 		List<LeaveBalance> ballist=balRepo.getEmployeeBalance(id);
+		for(LeaveBalance l:ballist)
+			System.out.println("-------------------"+l.getLeavebalance());
 		model.addAttribute("ballist", ballist);
 		model.addAttribute("userid", id);
 		return "viewmanBalance";
+	}
+	
+//For both Manager and Employee
+	
+	@RequestMapping(path = "/movementregister/{id}", method = RequestMethod.GET)
+    public String movementRegister(Model model, @PathVariable(value = "id") String id) {
+		    String current=LocalDate.now().getMonth().name();
+		    String next=LocalDate.now().plusMonths(1).getMonth().name();
+		    String previous=LocalDate.now().minusMonths(1).getMonth().name();
+		    int currentmonth=LocalDate.now().getMonthValue();
+		    int nextmonth=LocalDate.now().plusMonths(1).getMonthValue();
+		    int previousmonth=LocalDate.now().minusMonths(1).getMonthValue();
+		    int year=LocalDate.now().getYear();
+		    model.addAttribute("current", current);
+		    model.addAttribute("next", next);
+		    model.addAttribute("previous", previous);
+		    model.addAttribute("currentmonth", currentmonth);
+		    model.addAttribute("nextmonth", nextmonth);
+		    model.addAttribute("previousmonth", previousmonth);
+		    model.addAttribute("year", year);
+		    model.addAttribute("userid", id);
+		    model.addAttribute("role", empRepo.getRole(id));
+		    return "movementregisterform";
+			}
+	@RequestMapping(path = "/viewmovement", method = RequestMethod.POST)
+    public String viewMovement(Model model, @RequestParam(value = "userid") String id,@RequestParam(value="year") String year,
+    		@RequestParam(value="role") String role,@RequestParam String month) {
+		List<LeaveApplication> leavelist=appRepo.getMovement(month, year, "Approved");
+		model.addAttribute("userid", id);
+		model.addAttribute("role", role);
+		model.addAttribute("leavelist",leavelist);
+		List<LeaveEntitlement> leavetypes=entRepo.findAll();
+		model.addAttribute("leavetype", leavetypes);
+		return "viewmovement";
 	}
 	
 }

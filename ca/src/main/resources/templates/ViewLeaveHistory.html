@@ -3,42 +3,10 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Employee Leave Applications</title>
-<th:block th:include="layout/header"></th:block>
-<style type="text/css">
-.tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-/* Style the buttons inside the tab */
-.tab button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-}
-
-/* Change background color of buttons on hover */
-.tab button:hover {
-  background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-.tab button.active {
-  background-color: #ccc;
-}
-</style>
+<th:block th:if="${role=='Employee'}" th:include="layout/employeeheader"></th:block>
+<th:block th:if="${role=='Manager' or role=='NoView'}" th:include="layout/managerheader"></th:block>
 </head>
 <body>
-<div class="tab">
-  <button class="tablinks" onclick="home();">Home</button>
-  <button class="tablinks" onclick="logout();">Logout</button>
-</div>
 <div class="container" align="center">
     <div th:if="${#lists.isEmpty(leavelist)}">
       <h2>Employee Leave Applications</h2>
@@ -79,23 +47,9 @@
                 <td th:if="${role=='Manager'}"><a th:href="${'/approveleave/edit/' + leaveapplication.id+'/'+ userid}" class="btn btn-default">View Application</a></td>
             </tr>
         </table>
-                <center><button th:if="${role=='NoView'}" onclick="myfun();">Back</button></center>
+                
     </div>
     <br>
 </div>
 </body>
-<script>
-function myfun()
-{
-	 window.history.back();
-}
-function home()
-{
-	window.location="http://localhost:8080/"+document.getElementById("login").value+"/"+document.getElementById("userid").value;
-	}
-function logout()
-{
-	window.location="http://localhost:8080/";
-}
-</script>
 </html>

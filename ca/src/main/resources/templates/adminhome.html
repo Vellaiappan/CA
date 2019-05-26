@@ -3,68 +3,11 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Admin Home</title>
-<th:block th:include="layout/header"></th:block>
+<th:block th:include="layout/adminheader"></th:block>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<style>
-/* Style the tab */
-.tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-/* Style the buttons inside the tab */
-.tab button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-}
-
-/* Change background color of buttons on hover */
-.tab button:hover {
-  background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-.tab button.active {
-  background-color: #ccc;
-}
-
-</style>
 </head>
 <body align="center">
-<div class="tab">
-  <button class="tablinks" onclick="home();">Home</button>
-  <button class="tablinks" onclick="logout();">Logout</button>
-</div>
-<br>
-<div class="w3-container">
-  <a href="/employees" class="w3-button w3-black">View and Manage Employees</a>
-</div>
-<br><br>
-<div class="w3-container">
-  <a href="/leaveentitle" class="w3-button w3-black">Manage Leave Entitlement</a>
-</div>
-<br><br>
-<div class="w3-container">
-  <a href="/publicholidays" class="w3-button w3-black">Manage Public Holidays</a>
-</div>
-<br><br>
+<img src="../../static/images/admin.jpg" th:src="@{/images/admin.jpg}" />
 </body>
 </body>
-<script>
-function home()
-{
-	window.location="http://localhost:8080/adminhome";
-	}
-function logout()
-{
-	window.location="http://localhost:8080/";
-	}
-</script>
 </html>

@@ -3,42 +3,9 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Manager Leave Balance</title>
-<th:block th:include="layout/header"></th:block>
-<style type="text/css">
-.tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-/* Style the buttons inside the tab */
-.tab button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-}
-
-/* Change background color of buttons on hover */
-.tab button:hover {
-  background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-.tab button.active {
-  background-color: #ccc;
-}
-</style>
+<th:block th:include="layout/managerheader"></th:block>
 </head>
 <body>
-<div class="tab">
-  <button class="tablinks" onclick="home();">Home</button>
-  <button class="tablinks" onclick="logout();">Logout</button>
-</div>
 <div class="container" align="center">
  <input type="hidden" id="userid" name="userid" th:value="${userid}"/> 
     <div th:if="${not #lists.isEmpty(ballist)}">
@@ -55,23 +22,8 @@
                 <td th:text="${leavebalance.leavebalance}"></td>
             </tr>
         </table>
-        <button onclick="myfun();">Back</button>
     </div>
     <br>
 </div>
 </body>
-<script>
-function myfun()
-{
-	  window.history.back();
-	}
-function home()
-{
-	window.location="http://localhost:8080/managerhome/"+document.getElementById("userid").value;
-	}
-function logout()
-{
-	window.location="http://localhost:8080/";
-}
-</script>
 </html>

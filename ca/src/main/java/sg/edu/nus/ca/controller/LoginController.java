@@ -1,7 +1,6 @@
 package sg.edu.nus.ca.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -86,6 +85,7 @@ public class LoginController {
 		@RequestMapping(path = "/verifymanager",method=RequestMethod.POST)
 	    public String VerifyManager(@RequestParam("userid") String username,@RequestParam("password") String password,Model model) {
 			List<Employee> a=empRepo.findManager(username, HashPasswords.encodeSimple(password),"Manager");
+			System.out.println("-------"+HashPasswords.encodeSimple(password));
 			if(a.size()==0) {
 				model.addAttribute("Error","error");
 				return "ManagerLogin";
