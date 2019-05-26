@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Subordinate History</title>
+<th:block th:include="layout/managerheader"></th:block>
+</head>
+<body>
+<h2 align="center">Choose Subordinate</h2>
+<form class="form-horizontal"
+				th:action="@{/searchapp}" method="post">
+				<input type="hidden" class="form-control" id="userid" name="userid" th:value="${userid}" />
+				<table align="center">
+					
+				
+				<tr><td><label class="col-sm-2 control-label">Subordinate-Employee:</label></td>
+				<td><select class="form-control" id="sub" name="sub">
+						   <option th:each="employee :${elist}" th:value="${employee.id}" th:text="${employee.name}"></option>
+						</select></td></tr>
+					
+				
+				<tr><td><button type="submit" class="btn btn-primary" >View</button>
+				</td></tr>
+				</table>
+			</form>
+</body>
+</html>
