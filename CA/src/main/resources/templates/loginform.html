@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Login Form</title>
+<th:block th:include="layout/loginheader"></th:block>
+</head>
+<body>
+<div class="container" align="center">
+		<h2>ADMIN LOGIN</h2>
+		<div>
+			<form th:action="@{/verifyadmin}" method="POST" class="form-signin">
+			<h3 class="form-signin-heading" th:text="Welcome"></h3>
+			<br/>
+			 
+			<input type="text" id="userid" name="userid"  th:placeholder="UserId"
+				class="form-control" /> <br/> 
+			<input type="password"  th:placeholder="Password"
+				id="password" name="password" class="form-control" /> <br /> 
+				
+			<div align="center" th:if="${Error=='error'}">
+				<p style="font-size: 20; color: #FF1C19;">Id or Password invalid, please verify</p>
+			</div>
+			<button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit" th:text="Login"></button>
+		    </form>
+		</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Leave Form</title>
+<th:block th:include="layout/employeeheader"></th:block>
+<style>
+.button {
+  font: bold 11px Arial;
+  text-decoration: none;
+  background-color: #EEEEEE;
+  color: #333333;
+  padding: 2px 6px 2px 6px;
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-left: 1px solid #CCCCCC;
+}
+</style>
+</head>
+<body>
+<div class="container" align="center" th:switch="${Error}">
+		<h2>Leave Application Form</h2>
+		<div align="center" th:if="${Error=='error'}">
+				<p th:text="${Message}" style="font-size: 20; color: #FF1C19;"></p>
+			    </div>
+		<div>
+			<form class="form-horizontal" th:object="${leaveapplication}"
+				th:action="@{/saveleave}" method="post" onsubmit="return myfun();">
+				<div class="form-group">
+					<div class="col-sm-10">
+						<input type="hidden" class="form-control" th:field="*{id}" />
+						<input type="hidden" class="form-control" id="userid" name="userid" th:value="${userid}" />
+						<input type="hidden" class="form-control" id="days" name="days" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+						<label class="col-sm-2 control-label">Start Date:</label>
+						<input type="date" class="form-control" id="start" th:field="*{startdate}" />
+						<p style="color:red;" th:if="${#fields.hasErrors('startdate')}" th:errors="*{startdate}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					<label class="col-sm-2 control-label">End Date:</label>
+					<input type="date" class="form-control" id="end" th:field="*{enddate}" />
+					<p style="color:red;" th:if="${#fields.hasErrors('enddate')}" th:errors="*{enddate}"></p>	
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					<label class="col-sm-2 control-label">LeaveType:</label>
+						<select class="form-control" id="leavetype" th:field="*{leavetype}" >
+						<option th:each="leaveentitlement :${leavetypes}"  th:value="${leaveentitlement.id}" th:text="${leaveentitlement.leavetype}" ></option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+						<label class="col-sm-2 control-label">Reason:</label>
+						<input type="text" class="form-control" id="reasons" th:field="*{reasons}" />
+						<p style="color:red;" th:if="${#fields.hasErrors('reasons')}" th:errors="*{reasons}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					    <label class="col-sm-2 control-label">Contact:</label>
+						<input type="text" class="form-control" th:field="*{contact}" />
+						<p style="color:red;" th:if="${#fields.hasErrors('contact')}" th:errors="*{contact}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+						<label class="col-sm-2 control-label">Status:</label>
+						<input type="text" class="form-control" id="status" name="status" th:value="${status}" readonly />
+						<p style="color:red;" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+					    <label class="col-sm-2 control-label">Manager:</label>
+						<input type="text" class="form-control" id="manager" name="manager" th:value="${employee.managerid}" readonly />
+						<p style="color:red;" th:if="${#fields.hasErrors('manager')}" th:errors="*{manager}"></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2">
+						<button type="submit" class="btn btn-primary">Save</button>
+					</div>
+					<br>
+					<div class="col-sm-2" th:if="${status=='Updated'}">
+						<a th:href="${'/saveleave/delete/' + leaveapplication.id+'/'+userid}" class="button">Delete</a>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+</body>
+<script>
+function myfun()
+{
+	
+	if(document.getElementById("start").value=="" || document.getElementById("end").value==""){
+		alert("start/end date cannot be empty ");
+		return false;
+	}
+	var StartDate = document.getElementById("start").value;
+	var EndDate = document.getElementById("end").value;
+	var CurrentDate = new Date();
+	StartDate = new Date(StartDate);
+	EndDate = new Date(EndDate);
+	if(StartDate.getFullYear() < CurrentDate.getFullYear()){
+		alert("Startdate cannot be older than this year ...apply in prior" );
+		return false;
+	}
+	if(EndDate < StartDate)
+		{
+		  alert("End Date cannot be older than start date...please change");
+		  return false;
+		}
+	if(document.getElementById("reasons").value=="")
+		{
+		  alert("Reason cannot be empty");
+		  return false;
+		}
+	var timeDiff = Math.abs(EndDate.getTime() - StartDate.getTime());
+	timeDiff=Math.ceil(timeDiff / (1000 * 3600 * 24));
+	document.getElementById("days").value=timeDiff+1;
+
+	return true;
+}
+
+</script>
+
+</html>

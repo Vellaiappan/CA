@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Manager Leave Applications</title>
+<th:block th:include="layout/managerheader"></th:block>
+</head>
+<body>
+<div class="container" align="center">
+    <div th:if="${#lists.isEmpty(leavelist)}">
+      <h2>Manager Leave Applications</h2>
+      <p style="color:red;">No more applications to view/process....</p>
+    </div>
+    <input type="hidden" id="userid" name="userid" th:value="${userid}"/> 
+    <div th:if="${not #lists.isEmpty(leavelist)}">
+        <h2>Manager Leave Applications</h2>
+        <table border='1' class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>LeaveType</th>
+                <th>Reason</th>
+                <th>No.of Days</th>
+                <th>Status</th>
+                <th>Contact</th>
+                <th>Manager Comment</th>
+            </tr>
+            <tr th:each="leaveapplication : ${leavelist}">
+                <td th:text="${leaveapplication.id}"></td>
+                <td th:text="${leaveapplication.startdate}"></td>
+                <td th:text="${leaveapplication.enddate}"></td>
+                <td th:each="leaveentitlement:${leavetype}" th:if="${leaveapplication.leavetype==leaveentitlement.id}" th:text="${leaveentitlement.leavetype}"></td>
+                <td th:text="${leaveapplication.reasons}"></td>
+                <td th:text="${leaveapplication.numofdays}"></td>
+                <td th:text="${leaveapplication.status}"></td>
+                <td th:text="${leaveapplication.contact}"></td>
+                <td th:text="${leaveapplication.managercomment}"></td>
+                <td><a th:href="${'/savemanleave/edit/' + leaveapplication.id+'/'+ userid}" class="btn btn-default">View Application</a></td>
+            </tr>
+        </table>
+    </div>
+    <br>
+</div>
+</body>
+</html>

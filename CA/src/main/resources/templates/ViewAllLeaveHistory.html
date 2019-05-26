@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Employee Leave Applications</title>
+<th:block th:include="layout/managerheader"></th:block>
+</head>
+<body>
+<div class="container" align="center">
+    <div th:if="${#lists.isEmpty(page.content)}">
+      <h2>Employee Leave Applications</h2>
+      <p style="color:red;">No more applications to view/process....</p>
+    </div>
+    <input type="hidden" id="login" name="login" value="managerhome"/>
+    <input type="hidden" id="userid" name="userid" th:value="${userid}"/> 
+    <div th:if="${not #lists.isEmpty(page.content)}">
+        <h2>Employee Leave Applications</h2>
+        <div>
+         <a href="http://localhost:8080/api/leaveapplication/download/leaveapplication.csv">Download as CSV File</a>
+        </div>
+        <table border='1' class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>LeaveType</th>
+                <th>Reason</th>
+                <th>No.of Days</th>
+                <th>Status</th>
+                <th>Manager</th>
+                <th>Employee</th>
+                <th>Contact</th>
+                <th>Manager Comment</th>
+            </tr>
+            <tr th:each="leaveapplication : ${page.content}">
+                <td th:text="${leaveapplication.id}"></td>
+                <td th:text="${leaveapplication.startdate}"></td>
+                <td th:text="${leaveapplication.enddate}"></td>
+                <td th:each="leaveentitlement:${leavetype}" th:if="${leaveapplication.leavetype==leaveentitlement.id}" th:text="${leaveentitlement.leavetype}"></td>
+                <td th:text="${leaveapplication.reasons}"></td>
+                <td th:text="${leaveapplication.numofdays}"></td>
+                <td th:text="${leaveapplication.status}"></td>
+                <td th:if="${role=='Employee' or role=='NoView'}" th:text="${leaveapplication.manager}"></td>
+                <td th:if="${role=='Manager' or role=='NoView'}" th:text="${leaveapplication.employee.id}"></td>
+                <td th:text="${leaveapplication.contact}"></td>
+                <td th:text="${leaveapplication.managercomment}"></td>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <div class="pagination-div">
+    <span th:if="${page.hasPrevious()}">
+        <a th:href="@{/viewallleave/__${userid}__(page=${page.number-1},size=${page.size})}">Previous</a>
+    </span>
+    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+        <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
+        <span th:unless="${page.number == i}">
+             <a  th:href="@{/viewallleave/__${userid}__(page=${i},size=${page.size})}">[[${i}+1]]</a>
+        </span>
+    </th:block>
+    <span th:if="${page.hasNext()}">
+        <a  th:href="@{/viewallleave/__${userid}__(page=${page.number+1},size=${page.size})}">Next</a>
+    </span>
+</div>
+</div>
+</body>
+</html>

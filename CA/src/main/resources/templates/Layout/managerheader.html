@@ -1,0 +1,34 @@
+ 
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>	
+	<input type="hidden" id="userid" name="userid" th:value="${userid}"/>
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<div><a th:href="@{'/managerhome/'+${userid}}"><img src="../../static/images/laps.jpg" th:src="@{/images/laps.jpg}" align="left" height="45" /></a></div>
+			</div>
+
+			<ul class="nav navbar-nav">
+				<li><a th:href="@{'/viewmanbalance/'+${userid}}">Leave Balance</a></li>
+				<li><a th:href="@{'/viewmanleave/'+${userid}}">Applied Leaves</a></li>
+				<li><a th:href="@{'/manapplyleave/'+${userid}}">Apply Leave</a></li>
+				<li><a th:href="@{'/approveleave/'+${userid}}">Approve Leave</a></li>
+				<li><a th:href="@{'/viewallleave/'+${userid}}">View All Leave History</a></li>
+				<li><a th:href="@{'/viewspecific/'+${userid}}">Employee Leave History</a></li>
+				<li><a th:href="@{'/movementregister/'+${userid}}">Movement Register</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+			</ul>
+		</div>
+	</nav>
+</body>
+</html>
