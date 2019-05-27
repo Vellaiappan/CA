@@ -178,8 +178,20 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
     public String saveLeaveType(LeaveApplication leave,@RequestParam("userid") String id,@RequestParam("days") String days,Model model) {
 		int numofdays;
 		double balance;
+		String leaveid,operation;
 		Employee e = empRepo.findById(id).orElse(null);
-		List<LeaveApplication> lalist=appRepo.getLeaveAppForEmployee(id, "Applied", "Updated", "Approved");
+		System.out.println("--------------"+leave.getId());
+		if(leave.getId()==null)
+		{
+			operation="create";
+			leaveid="";
+		}
+		else
+		{
+			operation="update";
+			leaveid=leave.getId().toString();
+		}
+		List<LeaveApplication> lalist=appRepo.getLeaveAppForEmployee(id, "Applied", "Updated", "Approved",leaveid);
 		if(LeaveCalculation.checkLeaveAppDates(lalist, leave.getStartdate().toLocalDate(), leave.getEnddate().toLocalDate()))
 		{
 			model.addAttribute("Error", "error");
@@ -205,6 +217,13 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
 			System.out.println(numofdays);
 		}
 		balance=balRepo.getBalance(id, leave.getLeavetype());
+		System.out.println("----------------Operation:"+operation);
+		if(operation.equals("update"))
+		{
+			System.out.println("----------balance:"+balance);
+			balance=balance+appRepo.getnumofleaves(leaveid);
+			System.out.println("----------balance:"+balance+"leave.getNumofdays();"+appRepo.getnumofleaves(leaveid));
+		}
 		if(balance<numofdays)
 		{
 			model.addAttribute("Error", "error");
@@ -352,8 +371,21 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
     public String saveManLeaveType(LeaveApplication leave,@RequestParam("userid") String id,@RequestParam("days") String days,Model model) {
 		int numofdays;
 		double balance;
+		String leaveid,operation;
 		Employee e = empRepo.findById(id).orElse(null);
-		List<LeaveApplication> lalist=appRepo.getLeaveAppForEmployee(id, "Applied", "Updated", "Approved");
+		System.out.println("--------------"+leave.getId());
+		if(leave.getId()==null)
+		{
+			leaveid="";
+			operation="create";
+		}
+		else
+		{
+			leaveid=leave.getId().toString();
+			operation="update";
+		}
+
+		List<LeaveApplication> lalist=appRepo.getLeaveAppForEmployee(id, "Applied", "Updated", "Approved",leaveid);
 		if(LeaveCalculation.checkLeaveAppDates(lalist, leave.getStartdate().toLocalDate(), leave.getEnddate().toLocalDate()))
 		{
 			model.addAttribute("Error", "error");
@@ -379,6 +411,12 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
 			System.out.println(numofdays);
 		}
 		balance=balRepo.getBalance(id, leave.getLeavetype());
+		System.out.println("----------------operation"+operation);
+		if(operation.equals("update"))
+		{
+			balance=balance+appRepo.getnumofleaves(leaveid);
+			System.out.println("---------------balance"+balance+"appRepo.getnumofleaves(leaveid)"+appRepo.getnumofleaves(leaveid));
+		}
 		if(balance<numofdays)
 		{
 			model.addAttribute("Error", "error");
