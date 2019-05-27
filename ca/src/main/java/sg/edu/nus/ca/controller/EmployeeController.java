@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import sg.edu.nus.ca.model.Employee;
+import sg.edu.nus.ca.model.LeaveApplication;
 import sg.edu.nus.ca.model.LeaveBalance;
 import sg.edu.nus.ca.model.LeaveBalanceIdentity;
 import sg.edu.nus.ca.model.LeaveEntitlement;
 import sg.edu.nus.ca.repository.EmployeePaginationRepository;
 import sg.edu.nus.ca.repository.EmployeeRepository;
+import sg.edu.nus.ca.repository.LeaveApplicationRepository;
 import sg.edu.nus.ca.repository.LeaveBalanceRepository;
 import sg.edu.nus.ca.repository.LeaveEntitleRepository;
 
@@ -34,6 +36,8 @@ public class EmployeeController {
 	private LeaveBalanceRepository balRepo;
 	@Autowired
 	private EmployeePaginationRepository empPageRepo;
+	@Autowired
+	private LeaveApplicationRepository appRepo;
 	
 	@Autowired
 	public void setEmpRepo(EmployeeRepository empRepo) {
@@ -69,10 +73,19 @@ public class EmployeeController {
 		{
         empRepo.save(employee);
         	List<LeaveEntitlement> leavelist=entRepo.getLeaveByRole(employee.getRole());
+        	List<LeaveApplication> leaveapp=appRepo.getLeaveByEmployee(employee.getId());
         	for(LeaveEntitlement l:leavelist)
         	{
         		LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(empRepo.findByEmail(employee.getEmailid()),l.getId()),l.getLeavecount());
         		balRepo.save(lbal);
+        	}
+        	if(leaveapp.size()!=0)
+        	{
+        		for(LeaveApplication la:leaveapp)
+        		{
+        			la.setManager(employee.getManagerid());
+        			appRepo.save(la);
+        		}
         	}
          return "redirect:/employees";
 		}
