@@ -8,8 +8,8 @@
 <body>
 <div class="container" align="center">
     <div th:if="${#lists.isEmpty(leavelist)}">
-      <h2>Manager Leave Applications</h2>
-      <p style="color:red;">No more applications to view/process....</p>
+      <h2>Leave Application</h2>
+      <p style="color:red;">No applications to be displayed</p>
     </div>
     <input type="hidden" id="userid" name="userid" th:value="${userid}"/> 
     <div th:if="${not #lists.isEmpty(leavelist)}">

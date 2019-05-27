@@ -27,7 +27,7 @@ public class LoginController {
 	
 	@RequestMapping(path = "/")
     public String Login() {
-        return "login";
+        return "EmployeeLogin";
     }
 	
 	@RequestMapping(path = "/asadmin")

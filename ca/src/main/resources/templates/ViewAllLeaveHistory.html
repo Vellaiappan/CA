@@ -9,7 +9,7 @@
 <div class="container" align="center">
     <div th:if="${#lists.isEmpty(page.content)}">
       <h2>Employee Leave Applications</h2>
-      <p style="color:red;">No more applications to view/process....</p>
+      <p style="color:red;">No applications to be displayed</p>
     </div>
     <input type="hidden" id="login" name="login" value="managerhome"/>
     <input type="hidden" id="userid" name="userid" th:value="${userid}"/> 

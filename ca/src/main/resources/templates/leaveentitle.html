@@ -9,12 +9,12 @@
 <body>
 <div class="container" align="center">
     <div th:if="${not #lists.isEmpty(leavelist)}">
-        <h2>All Leave Entitles</h2>
+        <h2>Leave Entitlement</h2>
         <table border='1' class="table table-striped">
             <tr>
-                <th>LeaveType</th>
+                <th>Leave Type</th>
                 <th>Role</th>
-                <th>LeaveCount</th>
+                <th>Leave Count</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -30,7 +30,7 @@
     <br>
 </div>
 <div class="w3-container" align="center">
-    <a th:href="${'/leaveentitle/add'}" class="w3-button w3-black">AddLeaveType</a>
+    <a th:href="${'/leaveentitle/add'}" class="w3-button w3-black">Add Leave Type</a>
     </div>
 </body>
 </html>

@@ -41,20 +41,20 @@
 						<label class="col-sm-2 control-label">Designation:</label>
 						<select class="form-control" id="designation" name="designation" th:field="*{designation}" >
 						<option id="select" value="">Select</option>
-						<option id="FinanceExecutive" value="FinanceExecutive">FinanceExecutive</option>
-						<option id="SalesExecutive" value="SalesExecutive">SalesExecutive</option>
+						<option id="FinanceExecutive" value="FinanceExecutive">Finance Executive</option>
+						<option id="SalesExecutive" value="SalesExecutive">Sales Executive</option>
 						<option id="Engineer" value="Engineer">Engineer</option>
 						<option id="Others" value="Others">Others</option>
-						<option id="GeneralManager" value="GeneralManager">GeneralManager</option>
-						<option id="FinanceManager" value="FinanceManager">FinanceManager</option>
-						<option id="PortfolioManager" value="PortfolioManager">PortfolioManager</option>
+						<option id="GeneralManager" value="GeneralManager">General Manager</option>
+						<option id="FinanceManager" value="FinanceManager">Finance Manager</option>
+						<option id="PortfolioManager" value="PortfolioManager">Portfolio Manager</option>
 						</select>
 						<p style="color:red;" th:if="${#fields.hasErrors('designation')}" th:errors="*{designation}"></p>
 					</div>
 				</div>
 				<div class="form-group">
 					<div class="col-sm-10">
-					<label class="col-sm-2 control-label">ManagerID:</label>
+					<label class="col-sm-2 control-label">Manager ID:</label>
 						<select class="form-control" id="manager" th:field="*{managerid}" >
 						<option value="system">select</option>
 						<option th:each="employee :${mlist}" th:if="${employee.getId()!='system'}" th:value="${employee.id}" th:text="${employee.name}" ></option>
@@ -63,7 +63,7 @@
 				</div>
 				<div class="form-group">
 					<div class="col-sm-10">
-					    <label class="col-sm-2 control-label">EmailID:</label>
+					    <label class="col-sm-2 control-label">Email ID:</label>
 						<input type="text" class="form-control" th:field="*{emailid}" />
 						<p style="color:red;" th:if="${#fields.hasErrors('emailid')}" th:errors="*{emailid}"></p>
 					</div>
