@@ -137,6 +137,10 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
     public String deleteSubmitLeave(Model model, @PathVariable(value = "id") String id,@PathVariable(value = "userid") String userid) {
 		LeaveApplication l=appRepo.findById(Integer.parseInt(id)).orElse(null);
 		l.setStatus("Deleted");
+		double balance=balRepo.getBalance(userid, l.getLeavetype());
+		balance=balance+l.getNumofdays();
+        LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(userid,l.getLeavetype()),balance);
+		balRepo.save(lbal);
 		appRepo.save(l);
 	    return "redirect:/viewleave/"+userid;
 	}
@@ -217,9 +221,9 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
         appRepo.save(leave);
         emailservice.sendSimpleMessage(e.getEmailid(),"Your Leave Application Submitted","Leave Id:"+leave.getId().toString());
         emailservice.sendSimpleMessage(empRepo.getManemail(leave.getManager()),"Your Subordinate Leave Application is Submitted in your queue","Leave Id:"+leave.getId().toString());
-        //balance=balance-numofdays;
-        //LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(id,leave.getLeavetype()),balance);
-		//balRepo.save(lbal);
+        balance=balance-numofdays;
+        LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(id,leave.getLeavetype()),balance);
+		balRepo.save(lbal);
         model.addAttribute("id", id);
         return "redirect:/employeehome/"+id;
 	}
@@ -279,6 +283,10 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
 		l.setManagercomment(comment);
 		appRepo.save(l);
 		emailservice.sendSimpleMessage(l.getEmployee().getEmailid(),"Your Leave Application is Rejected","Leave Id:"+l.getId().toString());
+		double balance=balRepo.getBalance(l.getEmployee().getId(), l.getLeavetype());
+		balance=balance+l.getNumofdays();
+		LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(l.getEmployee().getId(),l.getLeavetype()),balance);
+		balRepo.save(lbal);
 	    return "redirect:/approveleave/"+userid;
 	}
 	
@@ -290,10 +298,10 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
 		l.setManagercomment(comment);
 		appRepo.save(l);
 		emailservice.sendSimpleMessage(l.getEmployee().getEmailid(),"Your Leave Application is Approved","Leave Id:"+l.getId().toString());
-		double balance=balRepo.getBalance(l.getEmployee().getId(), l.getLeavetype());
-		balance=balance-l.getNumofdays();
-        LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(l.getEmployee().getId(),l.getLeavetype()),balance);
-		balRepo.save(lbal);
+		//double balance=balRepo.getBalance(l.getEmployee().getId(), l.getLeavetype());
+		//balance=balance-l.getNumofdays();
+        //LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(l.getEmployee().getId(),l.getLeavetype()),balance);
+		//balRepo.save(lbal);
 	    return "redirect:/approveleave/"+userid;
 	}
 	
