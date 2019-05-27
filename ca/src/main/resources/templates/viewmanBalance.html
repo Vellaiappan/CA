@@ -12,12 +12,10 @@
         <h2>Manager Leave Balances</h2>
         <table border='1' class="table table-striped">
             <tr>
-                <th>Leave Type Id</th>
                 <th>Leave Type</th>
                 <th>Balance</th>
             </tr>
             <tr th:each="leavebalance : ${ballist}">
-                <td th:text="${leavebalance.balanceIdentity.leavetypeid}"></td>
                 <td th:each="leaveentitlement:${leavetype}" th:if="${leavebalance.balanceIdentity.leavetypeid==leaveentitlement.id}" th:text="${leaveentitlement.leavetype}"></td>
                 <td th:text="${leavebalance.leavebalance}"></td>
             </tr>
