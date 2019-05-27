@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import sg.edu.nus.ca.model.Admin;
 import sg.edu.nus.ca.model.Employee;
 
+@Repository
 public interface EmployeeRepository extends JpaRepository<Employee,String> {
 
 	@Query(value="select * from employee where role=?1",nativeQuery=true)

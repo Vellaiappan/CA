@@ -1,18 +1,30 @@
 package sg.edu.nus.ca.service;
 
+import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import sg.edu.nus.ca.model.LeaveApplication;
 import sg.edu.nus.ca.repository.PublicHolidayRepository;
 
+@Service
 public class LeaveCalculation {
+
+	private static PublicHolidayRepository phRepo;
 	
-public static int numOfWorkingDays(PublicHolidayRepository phRep, LocalDate start, LocalDate end) {
+	@Autowired
+    public LeaveCalculation(PublicHolidayRepository phRepo) {
+        LeaveCalculation.phRepo = phRepo;
+    }
+	
+	// calculate number of working days between 2 dates
+	public static int numOfWorkingDays(PublicHolidayRepository phRep, LocalDate start, LocalDate end) {
 		
 		int count = 0;
 		ArrayList<Date> phDates1 = phRep.findAllPublicHolidayDates();
@@ -34,6 +46,7 @@ public static int numOfWorkingDays(PublicHolidayRepository phRep, LocalDate star
 		return count;
 	}
 
+	// returns true if the current leave application overlaps with any of the past leave applications
     public static boolean checkLeaveAppDates(List<LeaveApplication> lalist,LocalDate start,LocalDate end)
     {
     	LocalDate appStartDate,appEndDate;
@@ -44,7 +57,9 @@ public static int numOfWorkingDays(PublicHolidayRepository phRep, LocalDate star
     		
     		appStartDate=la.getStartdate().toLocalDate();
     		appEndDate=la.getEnddate().toLocalDate();
-    		days=appStartDate.until(appEndDate, ChronoUnit.DAYS);	
+    		
+    		days=appStartDate.until(appEndDate, ChronoUnit.DAYS);
+    		
     		 if(daysbet>days)
     		 {
     		  for(LocalDate date = start; date.isBefore(end.plusDays(1)); date = date.plusDays(1)) {
@@ -76,5 +91,31 @@ public static int numOfWorkingDays(PublicHolidayRepository phRep, LocalDate star
     	System.out.println("Problem");
     	return false;
     }
+    
+    // returns true if the date is a working day, i.e. not weekend or public holiday
+    public static boolean isWorkingDay(Date d) {
+    	LocalDate date = d.toLocalDate();
+    	ArrayList<LocalDate> phDates = getPhDates();
+    	
+    	if(date.getDayOfWeek() == DayOfWeek.SATURDAY)
+			return false;
+		if(date.getDayOfWeek() == DayOfWeek.SUNDAY)
+			return false;
+		if(phDates.contains(date))
+			return false;
 
+		return true;    	
+    }
+    
+    // get list of public holidays in LocalDate format
+    public static ArrayList<LocalDate> getPhDates() {
+    	ArrayList<Date> phDates = phRepo.findAllPublicHolidayDates();
+    	ArrayList<LocalDate> phLocalDates = new ArrayList<LocalDate>();
+    	
+		for(Date phDate : phDates) {
+			phLocalDates.add(phDate.toLocalDate());
+		}
+		
+		return phLocalDates;
+    }
 }

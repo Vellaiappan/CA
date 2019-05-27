@@ -1,11 +1,15 @@
 package sg.edu.nus.ca.repository;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import sg.edu.nus.ca.model.*;
 
+
+@Repository
 public interface LeaveApplicationRepository extends JpaRepository<LeaveApplication,Integer> {
 
 	@Query(value="select * from leave_application where employeeid=?1",nativeQuery=true)
@@ -26,4 +30,7 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
 	@Query(value="select numofdays from leave_application where id=?1",nativeQuery=true)
 	int getnumofleaves(String id);
 	
+	//Employees on leave during leave period
+	@Query(value="SELECT distinct name from employee, leave_application la where employee.id = la.employeeid and status='approved' and (?1 between la.startdate and la.enddate)",nativeQuery=true)
+	List<String> getEmployeeNameByDate(LocalDate date);
 }
