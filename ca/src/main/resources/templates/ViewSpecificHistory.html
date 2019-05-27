@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2 align="center">Choose Subordinate</h2>
-<p align="center" th:if="${#lists.isEmpty(elist)}" style="color:red;">You don't have any subordinates to view........</p>
+<p align="center" th:if="${#lists.isEmpty(elist)}" style="color:red;">You don't have any subordinates</p>
 <form class="form-horizontal"
 				th:action="@{/searchapp}" method="post">
 				<input type="hidden" class="form-control" id="userid" name="userid" th:value="${userid}" />

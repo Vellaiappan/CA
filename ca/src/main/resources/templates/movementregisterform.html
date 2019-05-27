@@ -14,19 +14,28 @@
 				<input type="hidden" class="form-control" id="userid" name="userid" th:value="${userid}" />
 				<input type="hidden" class="form-control" id="role" name="role" th:value="${role}" />
 				<input type="hidden" class="form-control" id="year" name="year" th:value="${year}" />
+				<br/>
 				<table align="center">
 					
 				
-				<tr><td><label class="col-sm-2 control-label">Select Month:</label></td>
-				<td><select class="form-control" id="month" name="month">
+				<tr>
+					<td>
+						<label class="control-label"><font size="4">Select Month:</font></label>
+					</td>
+					
+					<td>
+						<select class="form-control" id="month" name="month">
 						   <option th:value="${currentmonth}" th:text="${current}"></option>
 						   <option th:value="${previousmonth}" th:text="${previous}"></option>
 						   <option th:value="${nextmonth}" th:text="${next}"></option>
-						</select></td></tr>
+						</select>
+					</td>
 					
-				
-				<tr><td><button type="submit" class="btn btn-primary" >View</button>
-				</td></tr>
+					<td>
+						<button type="submit" class="btn btn-primary" >View</button>
+					</td>	
+				</tr>
+
 				</table>
 			</form>
 </body>

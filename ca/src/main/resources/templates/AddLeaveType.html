@@ -6,7 +6,7 @@
 <th:block th:include="layout/adminheader"></th:block>
 </head>
 <body>
-		<h2 align="center">Add/Edit LeaveType Details</h2>
+		<h2 align="center">Add/Edit Leave Type</h2>
 			<form class="form-horizontal" th:object="${leaveentitlement}"
 				th:action="@{/savetype}" method="post" onsubmit="return myfun();">
 				<input type="hidden" class="form-control" th:field="*{id}" />
@@ -16,7 +16,7 @@
 			    </div>
 				
 				<table align="center">
-				<tr><td><label class="col-sm-2 control-label">LeaveType:</label></td>
+				<tr><td><label class="col-sm-2 control-label">Leave Type:</label></td>
 				<td><input type="text" class="form-control" id="leavetype" th:field="*{leavetype}" /></td>
 				<td><p style="color:red;" th:if="${#fields.hasErrors('leavetype')}" th:errors="*{leavetype}"></p>
 				</td></tr>
@@ -29,7 +29,7 @@
 						</select></td>
 						<td><p style="color:red;" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></p></td></tr>
 					
-				<tr><td><label class="col-sm-2 control-label">LeaveCount:</label></td>
+				<tr><td><label class="col-sm-2 control-label">Leave Count:</label></td>
 				<td><input type="number" min="0" class="form-control" id="leavecount" th:field="*{leavecount}" /></td>
 				<td><p style="color:red;" th:if="${#fields.hasErrors('leavecount')}" th:errors="*{leavecount}"></p></td></tr>	
 				
