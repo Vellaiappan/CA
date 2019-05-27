@@ -261,7 +261,7 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
         LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(id,leave.getLeavetype()),balance);
 		balRepo.save(lbal);
         model.addAttribute("id", id);
-        return "redirect:/viewleave/"+id;
+        return "redirect:/employeehome/"+id;
 	}
 	
 	@RequestMapping(path = "/viewleave/{id}", method = RequestMethod.GET)
@@ -439,13 +439,13 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
 		{
 			model.addAttribute("Error", "error");
 			model.addAttribute("Message", "The start date or end date cannot be on public holiday or weekend.");
-			List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Employee");
+			List<LeaveEntitlement> leavetypes=entRepo.getLeaveByRole("Manager");
 			model.addAttribute("userid", id);
 			model.addAttribute("employee", e);
 			model.addAttribute("leavetypes", leavetypes);
 			model.addAttribute("status",leave.getStatus());
 			model.addAttribute("leaveapplication", leave);
-			return "leaveform";	
+			return "managerleaveform";	
 		}
 
 		List<LeaveApplication> lalist=appRepo.getLeaveAppForEmployee(id, "Applied", "Updated", "Approved",leaveid);
@@ -500,7 +500,7 @@ public void setAppPageRepo(LeaveAppPaginationRepository appPageRepo) {
         LeaveBalance lbal=new LeaveBalance(new LeaveBalanceIdentity(id,leave.getLeavetype()),balance);
 		balRepo.save(lbal);
         model.addAttribute("id", id);
-        return "redirect:/viewmanleave/"+id;
+        return "redirect:/managerhome/"+id;
 	}
 	
 	@RequestMapping(path = "/viewmanleave/{id}", method = RequestMethod.GET)
